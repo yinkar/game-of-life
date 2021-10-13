@@ -8,6 +8,7 @@ let config = {
       rowSize: null,
       colSize: null,
       color: 'rgb(30, 30, 30)',
+      pausedColor: 'rgb(45, 45, 45)',
       borderColor: 'rgb(75, 75, 75)',
       width: 640,
       height: 480
@@ -60,6 +61,7 @@ let config = {
   
     startButton = createButton('Start');
     startButton.mousePressed(startStop);
+    startButton.style('background-color', 'firebrick');
   
     clearButton = createButton('Clear');
     clearButton.mousePressed(clearCellMatrix);
@@ -82,7 +84,12 @@ let config = {
     for (let i = 0; i < config.world.rowSize; i++) {    
       for (let j = 0; j < config.world.colSize; j++) {
   
-        fill(color(config.world.color));
+        if (config.paused) {
+          fill(color(config.world.pausedColor));
+        }
+        else {
+          fill(color(config.world.color));
+        }
   
         if (cellMatrix[i][j] === 1) {
           fill(color(config.cell.color));
@@ -129,9 +136,11 @@ let config = {
   
     if (config.paused) {
       startButton.html('Start');
+      startButton.style('background-color', 'firebrick');
     }
     else {
       startButton.html('Stop');
+      startButton.style('background-color', 'rebeccapurple');
     }
   }
   
