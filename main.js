@@ -18,6 +18,9 @@ let config = {
   };
   
   let startButton = null;
+  let clearButton = null;
+  
+  let fpsSlider = null;
   
   let cellMatrix = [];
   let shadowCellMatrix = [];
@@ -39,10 +42,10 @@ let config = {
   
     config.world.rowSize =  height / config.cell.size;
     config.world.colSize = width / config.cell.size;
-    
+  
     cellMatrix = resetCellMatrix(cellMatrix);
     shadowCellMatrix = resetCellMatrix(shadowCellMatrix);
-    
+  
     for (let i = 0, r = examplePattern.length; i < r; i++) {
       for (let j = 0, c = examplePattern[0].length; j < c; j++) {
         cellMatrix[
@@ -52,19 +55,27 @@ let config = {
         ] = examplePattern[i][j];
       }
     }
-    
+  
     frameRate(config.animationFps);
-    
+  
     startButton = createButton('Start');
-    
     startButton.mousePressed(startStop);
+  
+    clearButton = createButton('Clear');
+    clearButton.mousePressed(clearCellMatrix);
+    
+    fpsSlider = createSlider(0, 30, config.animationFps);
+    fpsSlider.input(() => {
+      config.animationFps = fpsSlider.value();
+      frameRate(config.animationFps);
+    });
   }
   
   function draw() {
     if (!config.paused) {
       era();
     }
-    
+  
     background(color(config.world.color));
     stroke(color(config.world.borderColor));
   
@@ -103,7 +114,7 @@ let config = {
         }
       }
     }
-    
+  
   }
   
   function getCellPosition(x, y) {
@@ -115,7 +126,7 @@ let config = {
   
   function startStop() {
     config.paused = !config.paused;
-    
+  
     if (config.paused) {
       startButton.html('Start');
     }
@@ -126,12 +137,12 @@ let config = {
   
   function era() {
     shadowCellMatrix = resetCellMatrix(shadowCellMatrix);
-    
+  
     for (let i = 0; i < config.world.rowSize; i++) {    
       for (let j = 0; j < config.world.colSize; j++) {
-        
+  
         let neighbourCount = 0;
-              
+  
         if (cellMatrix[i-1] !== undefined) {
           if (cellMatrix[i-1][j-1] === 1) {
             neighbourCount++;
@@ -145,15 +156,15 @@ let config = {
             neighbourCount++;
           }
         }
-        
+  
         if (cellMatrix[i][j-1] === 1) {
           neighbourCount++;
         }
-        
+  
         if (cellMatrix[i][j+1] === 1) {
           neighbourCount++;
         }
-        
+  
         if (cellMatrix[i+1] !== undefined) {
           if (cellMatrix[i+1][j-1] === 1) {
             neighbourCount++;
@@ -167,8 +178,8 @@ let config = {
             neighbourCount++;
           }
         }
-        
-        
+  
+  
         if (cellMatrix[i][j] === 1 && [2, 3].includes(neighbourCount)) {
           shadowCellMatrix[i][j] = 1;
         }
@@ -178,10 +189,10 @@ let config = {
         else {
           shadowCellMatrix[i][j] = 0;
         }
-        
+  
       }
     }
-    
+  
     cellMatrix = shadowCellMatrix;
   }
   
@@ -196,8 +207,12 @@ let config = {
   
       matrix.push(row);
     }
-    
+  
     return matrix;
+  }
+  
+  function clearCellMatrix() {
+      cellMatrix = resetCellMatrix(cellMatrix);
   }
   
   function mousePressed() {
@@ -211,5 +226,3 @@ let config = {
       frameRate(config.animationFps);
     }
   }
-  
-  
