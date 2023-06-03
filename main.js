@@ -222,6 +222,10 @@ let config = {
   
   function clearCellMatrix() {
       cellMatrix = resetCellMatrix(cellMatrix);
+
+      // Stop animation
+      config.paused = false;
+      startStop();
   }
   
   function mousePressed() {
