@@ -1,7 +1,7 @@
 
 let config = {
   cell: {
-    size: 16,
+    size: 8,
     color: 'rgb(0, 255, 255)'
   },
   world: {
@@ -38,20 +38,6 @@ const TouchTool = {
 
 let touchActiveTool = TouchTool.PENCIL;
 
-document.oncontextmenu = function() {
-  return false;
-};
-
-let samplePattern = [
-  [0, 0, 1, 1, 1],
-  [0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0],
-  [0, 0, 1, 0, 0],
-  [1, 0, 1, 0, 0],
-  [0, 1, 1, 0, 0]
-];
-
 let checkPosition = null;
 let activate = null;
 let deactivate = null;
@@ -68,11 +54,11 @@ function getCellPosition(x, y) {
 
 function setup() {
   if (windowWidth < 600) {
-    config.world.width = 300;
+    config.world.width = 360;
     config.cell.size = 8;
   }
 
-  createCanvas(config.world.width, config.world.height);
+  canvas = createCanvas(config.world.width, config.world.height);
 
   config.world.rowSize =  int(height / config.cell.size);
   config.world.colSize = int(width / config.cell.size);
@@ -80,15 +66,33 @@ function setup() {
   cellMatrix = resetCellMatrix(cellMatrix);
   shadowCellMatrix = resetCellMatrix(shadowCellMatrix);
 
-  for (let i = 0; i < samplePattern.length; i++) {
-    for (let j = 0; j < samplePattern[0].length; j++) {
-      cellMatrix[
-        parseInt(config.world.rowSize / 3) + i
-      ][
-        parseInt(config.world.colSize / 3) + j
-      ] = samplePattern[i][j];
+  const setInitPattern = () => {
+    let samplePattern = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+      [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+
+    for (let i = 0; i < samplePattern.length; i++) {
+      for (let j = 0; j < samplePattern[0].length; j++) {
+        cellMatrix[
+          int(config.world.rowSize / 3) + i
+        ][
+          int(config.world.colSize / 6) + j
+        ] = samplePattern[i][j];
+      }
     }
-  }
+  };
+
+  setInitPattern();
 
   checkPosition = () => {
     let positions = getCellPosition(mouseX, mouseY);
@@ -139,7 +143,26 @@ function setup() {
   clearButton = createButton('Clear');
   clearButton.mousePressed(clearCellMatrix);
 
+  resetButton = createButton('Reset');
+  resetButton.mousePressed(() => {
+    clearCellMatrix();
+    setInitPattern();
+  });
+  resetButton.style('background-color', 'firebrick');
+  resetButton.style('font-size', '.8rem');
+  
+  fpsSlider = createSlider(0, 60, config.animationFps);
+  fpsSlider.style('margin-left', '20px');
+  fpsSlider.input(() => {
+    config.animationFps = fpsSlider.value();
+    frameRate(config.animationFps);
+  });
+
   if (checkMobile()) {
+
+    fpsSlider.style('display', 'block');
+    fpsSlider.style('margin', '0 auto 20px auto');
+
     pencilButton = createButton('✏️');
     pencilButton.mousePressed(() => {
       touchActiveTool = TouchTool.PENCIL;
@@ -160,13 +183,8 @@ function setup() {
     eraserButton.style('font-size', '.8rem');
     eraserButton.style('border-radius', '50%');
   }
-  
-  fpsSlider = createSlider(0, 300, config.animationFps);
-  fpsSlider.style('margin-left', '20px');
-  fpsSlider.input(() => {
-    config.animationFps = fpsSlider.value();
-    frameRate(config.animationFps);
-  });
+
+  document.oncontextmenu = checkRightClickMenu;
 }
 
 function draw() {
@@ -327,4 +345,8 @@ function touchMoved() {
   if (touchActiveTool === TouchTool.ERASER) {
     deactivate();
   }
+}
+
+function checkRightClickMenu() {
+  if (checkPosition()) return false;
 }
