@@ -161,7 +161,7 @@ function setup() {
     eraserButton.style('border-radius', '50%');
   }
   
-  fpsSlider = createSlider(0, 30, config.animationFps);
+  fpsSlider = createSlider(0, 300, config.animationFps);
   fpsSlider.style('margin-left', '20px');
   fpsSlider.input(() => {
     config.animationFps = fpsSlider.value();
