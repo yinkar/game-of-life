@@ -151,7 +151,7 @@ function setup() {
   resetButton.style('background-color', 'firebrick');
   resetButton.style('font-size', '.8rem');
   
-  fpsSlider = createSlider(0, 60, config.animationFps);
+  fpsSlider = createSlider(0, 30, config.animationFps);
   fpsSlider.style('margin-left', '20px');
   fpsSlider.input(() => {
     config.animationFps = fpsSlider.value();
@@ -166,22 +166,21 @@ function setup() {
     pencilButton = createButton('✏️');
     pencilButton.mousePressed(() => {
       touchActiveTool = TouchTool.PENCIL;
-      pencilButton.style('background-color', 'crimson');
-      eraserButton.style('background-color', 'firebrick');
+      pencilButton.style('outline', '3px solid crimson');
+      eraserButton.style('outline', 'none');
     });
-    pencilButton.style('background-color', 'crimson');
-    pencilButton.style('font-size', '.8rem');
-    pencilButton.style('border-radius', '50%');
+    pencilButton.style('background-color', 'white');
+    pencilButton.style('outline', '3px solid crimson');
+    pencilButton.style('font-size', '1rem');
 
     eraserButton = createButton('🧹');
     eraserButton.mousePressed(() => {
       touchActiveTool = TouchTool.ERASER;
-      pencilButton.style('background-color', 'firebrick');
-      eraserButton.style('background-color', 'crimson');
+      pencilButton.style('outline', 'none');
+      eraserButton.style('outline', '3px solid crimson');
     });
-    eraserButton.style('background-color', 'firebrick');
-    eraserButton.style('font-size', '.8rem');
-    eraserButton.style('border-radius', '50%');
+    eraserButton.style('background-color', 'white');
+    eraserButton.style('font-size', '1rem');
   }
 
   document.oncontextmenu = checkRightClickMenu;
@@ -222,7 +221,6 @@ function draw() {
     if (checkMobile()) return;
     toggle();
   }
-
 }
 
 function startStop() {
@@ -323,7 +321,12 @@ function clearCellMatrix() {
 }
 
 function mousePressed() {
-  if (checkMobile()) return;
+  if (touchActiveTool === TouchTool.PENCIL) {
+    activate();
+  }
+  if (touchActiveTool === TouchTool.ERASER) {
+    deactivate();
+  }
 
   if (config.paused) {
     frameRate(60);
