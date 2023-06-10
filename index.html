@@ -12,7 +12,8 @@
             padding: 0;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
-            outline: none
+            outline: none;
+            user-select: none;
         }
         html, body {
             margin: 0;
@@ -34,15 +35,18 @@
             background-color: firebrick;
             border: none;
             color: #fff;
-            font-size: 1.5em;
+            font-size: .8rem;
             cursor: pointer;
             display: inline-block;
-            margin: 0 20px 30px 20px;
+            margin: 0 10px 30px 20px;
             box-shadow: 5px 5px 12px rgba(0, 0, 0, .6);
             border-radius: 4px;
         }
         button:hover {
             background-color: tomato;
+        }
+        button:active {
+            background-color: crimson;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
