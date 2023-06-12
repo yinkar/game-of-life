@@ -219,7 +219,13 @@ function draw() {
 
   if (mouseIsPressed) {
     if (checkMobile()) return;
-    toggle();
+    
+    if (mouseButton === LEFT) {
+      activate();
+    }
+    else if (mouseButton === RIGHT) {
+      deactivate();
+    }
   }
 }
 
@@ -321,15 +327,17 @@ function clearCellMatrix() {
 }
 
 function mousePressed() {
+  if (config.paused) {
+    frameRate(60);
+  }
+
+  if (!checkMobile()) return;
+
   if (touchActiveTool === TouchTool.PENCIL) {
     activate();
   }
   if (touchActiveTool === TouchTool.ERASER) {
     deactivate();
-  }
-
-  if (config.paused) {
-    frameRate(60);
   }
 }
 
@@ -342,6 +350,8 @@ function mouseReleased() {
 }
 
 function touchMoved() {
+  if (!checkMobile()) return;
+
   if (touchActiveTool === TouchTool.PENCIL) {
     activate();
   }
